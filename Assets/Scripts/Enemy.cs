@@ -7,6 +7,10 @@ public abstract class Enemigo : MonoBehaviour, IDamageable
 
     protected bool isFacingRight = true;
 
+    protected virtual void Awake()
+    {
+    }
+
     public virtual void TakeDamage(int amount)
     {
         vida -= amount;
@@ -17,13 +21,6 @@ public abstract class Enemigo : MonoBehaviour, IDamageable
     protected virtual void Morir()
     {
         Destroy(gameObject);
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.TryGetComponent<IDamageable>(out var player))
-        {
-            player.TakeDamage(1);
-        }
     }
 
     public abstract void Moverse();

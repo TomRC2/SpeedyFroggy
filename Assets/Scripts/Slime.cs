@@ -1,34 +1,54 @@
 using UnityEngine;
 
-public class Slime : EnemigoBasico
+public class Slime : Enemigo
 {
-    private float saltoIntervalo = 1.5f;
-    private float saltoTimer;
-    [SerializeField] private float fuerzaSalto = 5f;
+    [SerializeField] private Transform puntoA;
+    [SerializeField] private Transform puntoB;
+
+    private Transform destinoActual;
+    private Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+        vida = 3;
+    }
+
+    private void Start()
+    {
+        destinoActual = puntoB;
+    }
 
     private void Update()
     {
-        saltoTimer -= Time.deltaTime;
-        if (saltoTimer <= 0f)
+        Moverse();
+    }
+
+    public override void Moverse()
+    {
+        transform.position = Vector2.MoveTowards(
+            transform.position,
+            destinoActual.position,
+            velocidad * Time.deltaTime
+        );
+
+        if (Vector2.Distance(transform.position, destinoActual.position) < 0.1f)
         {
-            Saltar();
-            saltoTimer = saltoIntervalo;
+            destinoActual = destinoActual == puntoA ? puntoB : puntoA;
+            Flip();
         }
     }
 
-    private void Saltar()
+    protected override void Morir()
     {
-        float direccion = isFacingRight ? 1f : -1f;
-        Vector2 salto = new Vector2(direccion * velocidad, fuerzaSalto);
-        GetComponent<Rigidbody2D>().linearVelocity = salto;
+        Destroy(gameObject);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void Flip()
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isFacingRight = !isFacingRight;
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
+        isFacingRight = !isFacingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 }

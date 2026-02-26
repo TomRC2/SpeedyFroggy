@@ -91,7 +91,10 @@ public class Player : MonoBehaviour, IDamageable
         }
 
     }
-
+    public void Bounce()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 8f);
+    }
     public void TakeDamage(int amount)
     {
         Debug.Log("Daño recibido: " + amount);
