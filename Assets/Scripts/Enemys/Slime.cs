@@ -8,7 +8,7 @@ public class Slime : Enemigo
     private Transform destinoActual;
     private Animator animator;
 
-    private void Awake()
+    private  void Awake()
     {
         animator = GetComponent<Animator>();
         vida = 3;
