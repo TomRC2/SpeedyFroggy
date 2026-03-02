@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SkullBoss : MonoBehaviour, IDamageable
@@ -80,15 +81,32 @@ public class SkullBoss : MonoBehaviour, IDamageable
     {
         isVulnerable = true;
         tripsCount = 0;
-
         animator.SetTrigger("Transform");
         animator.SetBool("IsVulnerable", true);
 
-        foreach (var proj in orbitingProjectiles)
+        if (orbitingProjectiles.Count > 0)
         {
-            proj.LaunchOutward();
-        }
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                Vector2 playerPos = player.transform.position;
 
+                var proyectilCazador = orbitingProjectiles
+                    .Where(p => p != null)
+                    .OrderBy(p => Vector2.Distance(p.transform.position, playerPos))
+                    .FirstOrDefault();
+
+                if (proyectilCazador != null)
+                {
+                    proyectilCazador.LaunchTowards(playerPos);
+                }
+
+                orbitingProjectiles
+                    .Where(p => p != null && p != proyectilCazador)
+                    .ToList()
+                    .ForEach(p => p.LaunchOutward());
+            }
+        }
         orbitingProjectiles.Clear();
     }
 
@@ -156,5 +174,13 @@ public class SkullBoss : MonoBehaviour, IDamageable
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    public BossProjectile ObtenerProyectilMasCercano(Vector3 posicionJugador)
+    {
+        return orbitingProjectiles
+            .Where(p => p != null)
+            .OrderBy(p => Vector2.Distance(p.transform.position, posicionJugador))
+            .FirstOrDefault();
     }
 }

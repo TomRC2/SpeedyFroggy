@@ -6,6 +6,7 @@ public class Player : MonoBehaviour, IDamageable
 {
     [Header("References")]
     [SerializeField] private GameEvents gameEvents;
+    [SerializeField] private Animator animator;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
@@ -13,10 +14,10 @@ public class Player : MonoBehaviour, IDamageable
 
     [Header("Lives")]
     [SerializeField] private int maxLives = 3;
+    private int currentLives;
 
     [Header("Invincibility")]
     [SerializeField] private float invincibilityTime = 1.2f;
-
     private bool isInvincible = false;
     private SpriteRenderer spriteRenderer;
 
@@ -32,30 +33,23 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private float dashForce = 20f;
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 1f;
+    private bool isDashing = false;
+    private float dashCooldownTimer = 0f;
 
     [Header("Jump Feel")]
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
-    [SerializeField] private float coyoteTime = 0.1f;
-    [SerializeField] private float jumpBufferTime = 0.1f;
+    [SerializeField] private float coyoteTime = 0.15f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
 
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
 
-    private bool isDashing = false;
-    private float dashCooldownTimer = 0f;
-
     private Rigidbody2D rb;
     private PlayerInputActions inputActions;
-    private bool cameFromStomp = false;
     private Vector2 movementInput;
-    private bool jumpPressed;
     private bool isGrounded;
-    private bool isTouchingWall = false;
-    private int currentLives;
-    private Vector3 lastCheckpointPosition;
-
-    [SerializeField] private Animator animator;
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -64,9 +58,7 @@ public class Player : MonoBehaviour, IDamageable
         inputActions = new PlayerInputActions();
 
         currentLives = maxLives;
-        lastCheckpointPosition = transform.position;
 
-        gameEvents?.OnLivesChanged?.Invoke(currentLives);
 
         inputActions.Player.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += _ => movementInput = Vector2.zero;
@@ -74,26 +66,22 @@ public class Player : MonoBehaviour, IDamageable
         inputActions.Player.Dash.performed += _ => TryDash();
     }
 
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
+    private void OnEnable() => inputActions.Enable();
+    private void OnDisable() => inputActions.Disable();
 
-    private void OnDisable()
+    private void Start()
     {
-        inputActions.Disable();
+        transform.position = GameManager.Instance.GetCurrentCheckpoint();
+        gameEvents?.OnLivesChanged?.Invoke(currentLives);
     }
 
     private void Update()
     {
         if (isDead) return;
+
         if (movementInput.x != 0)
         {
-            transform.localScale = new Vector3(
-                Mathf.Sign(movementInput.x),
-                1,
-                1
-            );
+            transform.localScale = new Vector3(Mathf.Sign(movementInput.x), 1, 1);
         }
 
         if (!isDashing)
@@ -116,16 +104,12 @@ public class Player : MonoBehaviour, IDamageable
         animator.SetFloat("YVelocity", rb.linearVelocity.y);
         animator.SetBool("IsGrounded", isGrounded);
     }
+
     private void Move(float direction)
     {
-        if (isTouchingWall && !isGrounded)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            return;
-        }
-
         rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
     }
+
     private void TryJump()
     {
         if (isGrounded || coyoteTimeCounter > 0)
@@ -157,99 +141,79 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    public void EnableDoubleJump(bool value)
-    {
-        hasDoubleJump = value;
-    }
-
-    public void Bounce()
-    {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, stompBounceForce);
-        cameFromStomp = true;
-    }
-
     public void TakeDamage(int amount)
     {
         if (isInvincible || isDead) return;
 
         currentLives -= amount;
         gameEvents?.OnLivesChanged?.Invoke(currentLives);
-
-        if (currentLives <= 0)
-        {
-            Die();
-        }
-        else
-        {
-            StartCoroutine(InvincibilityCoroutine());
-        }
         animator.SetTrigger("Hit");
+
+        if (currentLives <= 0) Die();
+        else StartCoroutine(InvincibilityCoroutine());
     }
 
     private System.Collections.IEnumerator InvincibilityCoroutine()
     {
         isInvincible = true;
-
         float elapsed = 0f;
-        float blinkRate = 0.1f;
-
         while (elapsed < invincibilityTime)
         {
             spriteRenderer.enabled = !spriteRenderer.enabled;
-            yield return new WaitForSeconds(blinkRate);
-            elapsed += blinkRate;
+            yield return new WaitForSeconds(0.1f);
+            elapsed += 0.1f;
         }
-
         spriteRenderer.enabled = true;
         isInvincible = false;
     }
 
-    private bool isDead = false;
-
     private void Die()
     {
         if (isDead) return;
-
         isDead = true;
         gameEvents?.OnGameOver?.Invoke();
     }
 
     public void Respawn()
     {
-        transform.position = lastCheckpointPosition;
+        transform.position = GameManager.Instance.GetCurrentCheckpoint();
         rb.linearVelocity = Vector2.zero;
-
         currentLives = maxLives;
-        canDoubleJump = false;
-        isDashing = false;
         isDead = false;
-
         gameEvents?.OnLivesChanged?.Invoke(currentLives);
     }
 
     public void SetCheckpoint(Vector3 position)
     {
-        lastCheckpointPosition = position;
+        GameManager.Instance.SetCheckpoint(position);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision) => CheckGrounded(collision, true);
+    private void OnCollisionExit2D(Collision2D collision) => CheckGrounded(collision, false);
+
+    private void OnCollisionStay2D(Collision2D collision) => CheckGrounded(collision, true);
+    private void CheckGrounded(Collision2D collision, bool state)
     {
         foreach (var contact in collision.contacts)
         {
-            if (contact.normal.y > 0.5f)
+            if (contact.normal.y > 0.9f)
             {
-                isGrounded = true;
-                coyoteTimeCounter = coyoteTime;
+                isGrounded = state;
+                if (state)
+                {
+                    coyoteTimeCounter = coyoteTime;
+                    canDoubleJump = false;
+                }
                 return;
             }
         }
     }
 
+    public void Bounce() => rb.linearVelocity = new Vector2(rb.linearVelocity.x, stompBounceForce);
+
     private void TryDash()
     {
-        if (!hasDash || isDashing || dashCooldownTimer > 0f)
-            return;
-
+        if (!hasDash || isDashing || dashCooldownTimer > 0f) return;
         StartCoroutine(Dash());
     }
 
@@ -257,47 +221,24 @@ public class Player : MonoBehaviour, IDamageable
     {
         isDashing = true;
         dashCooldownTimer = dashCooldown;
+        float direction = movementInput.x != 0 ? Mathf.Sign(movementInput.x) : transform.localScale.x;
 
-        float direction = Mathf.Sign(movementInput.x);
-        if (direction == 0)
-            direction = transform.localScale.x;
-
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
         rb.linearVelocity = new Vector2(direction * dashForce, 0f);
 
         yield return new WaitForSeconds(dashDuration);
 
+        rb.gravityScale = originalGravity;
         isDashing = false;
     }
 
-    public void EnableDash(bool value)
-    {
-        hasDash = value;
-    }
+    public void EnableDoubleJump(bool value) => hasDoubleJump = value;
+    public void EnableDash(bool value) => hasDash = value;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.TryGetComponent<IPowerUp>(out var powerUp))
             powerUp.Apply(this);
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        bool groundedThisFrame = false;
-
-        foreach (var contact in collision.contacts)
-        {
-            if (contact.normal.y > 0.5f)
-            {
-                if (!cameFromStomp)
-                {
-                    isGrounded = true;
-                    coyoteTimeCounter = coyoteTime;
-                }
-                break;
-            }
-        }
-
-        isGrounded = groundedThisFrame;
-        cameFromStomp = false;
     }
 }

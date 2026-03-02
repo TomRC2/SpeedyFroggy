@@ -1,25 +1,20 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager Instance;
-    private Vector2 checkpointPosition;
-    public GameObject player;
+    [SerializeField] private Vector2 defaultCheckpoint;
+    private Vector2 currentCheckpoint;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        currentCheckpoint = defaultCheckpoint;
     }
 
     public void SetCheckpoint(Vector2 pos)
     {
-        checkpointPosition = pos;
-        Debug.Log("Checkpoint guardado en: " + pos);
+        currentCheckpoint = pos;
+        Debug.Log("Checkpoint actualizado mediante GameManager: " + pos);
     }
 
-    public void RespawnPlayer()
-    {
-        player.transform.position = checkpointPosition;
-    }
+    public Vector2 GetCurrentCheckpoint() => currentCheckpoint;
 }

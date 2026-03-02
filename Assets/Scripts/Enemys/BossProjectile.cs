@@ -35,4 +35,11 @@ public class BossProjectile : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void LaunchTowards(Vector2 targetPosition)
+    {
+        launched = true;
+        transform.parent = null;
+        direction = (targetPosition - (Vector2)transform.position).normalized;
+        Destroy(gameObject, 4f);
+    }
 }
