@@ -23,7 +23,13 @@ public class Slime : Enemigo
     {
         Moverse();
     }
-
+    public override void TakeDamage(int amount)
+    {
+        vida -= amount;
+        if (vida <= 0)
+            Morir();
+        animator.SetTrigger("Hit");
+    }
     public override void Moverse()
     {
         transform.position = Vector2.MoveTowards(

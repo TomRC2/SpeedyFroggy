@@ -1,16 +1,35 @@
-using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
-public class PauseMenuUI : MonoBehaviour
+public class PauseUI : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
 
-    private bool isPaused = false;
+    private PlayerInputActions input;
+    private bool isPaused;
+
+    private void Awake()
+    {
+        input = new PlayerInputActions();
+        input.UI.Pause.performed += _ => TogglePause();
+    }
+
+    private void OnEnable()
+    {
+        input.UI.Enable();
+    }
+
+    private void OnDisable()
+    {
+        input.UI.Disable();
+    }
 
     private void Start()
     {
         pausePanel.SetActive(false);
         Time.timeScale = 1f;
+        isPaused = false;
     }
 
     public void TogglePause()

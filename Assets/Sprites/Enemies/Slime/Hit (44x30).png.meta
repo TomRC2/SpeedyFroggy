@@ -140,17 +140,25 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 89
-        height: 20
+        width: 88
+        height: 19
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
+      outline:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      physicsShape:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      tessellationDetail: 0
       bones: []
-      spriteID: 2d375629926da4880800000000000000
+      spriteID: f4be14cee73000d43a02ab0157036de4
       internalID: -8625846662236638254
       vertices: []
       indices: 
@@ -160,19 +168,27 @@ TextureImporter:
       name: Hit (44x30)_1
       rect:
         serializedVersion: 2
-        x: 88
+        x: 89
         y: 0
-        width: 44
-        height: 23
+        width: 42
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
+      outline:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      physicsShape:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      tessellationDetail: 0
       bones: []
-      spriteID: 67edc6c33254ac510800000000000000
+      spriteID: 4349798a7a10790429f0a82926ebadd8
       internalID: 1570143437731978870
       vertices: []
       indices: 
@@ -182,19 +198,27 @@ TextureImporter:
       name: Hit (44x30)_2
       rect:
         serializedVersion: 2
-        x: 133
+        x: 134
         y: 0
-        width: 42
-        height: 25
+        width: 40
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
+      outline:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      physicsShape:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      tessellationDetail: 0
       bones: []
-      spriteID: 7ea7297af1ce11400800000000000000
+      spriteID: b134c4ac1cd805545a63593771a69306
       internalID: 293275071455328999
       vertices: []
       indices: 
@@ -204,19 +228,27 @@ TextureImporter:
       name: Hit (44x30)_3
       rect:
         serializedVersion: 2
-        x: 178
+        x: 179
         y: 0
-        width: 40
-        height: 27
+        width: 38
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
+      outline:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      physicsShape:
+      - - {x: 0, y: -15}
+        - {x: 22, y: 0}
+        - {x: 0, y: 15}
+        - {x: -22, y: 0}
+      tessellationDetail: 0
       bones: []
-      spriteID: 491df84b7c46855d0800000000000000
+      spriteID: ba263cafaaf5469448adf14cb2e5b7d1
       internalID: -3073595936789769836
       vertices: []
       indices: 
@@ -226,7 +258,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 77772c2a4e939074e9724c6919f7d577
     internalID: 0
     vertices: []
     indices: 
@@ -234,7 +266,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":44.0,"y":30.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Hit (44x30)_0: -8625846662236638254
       Hit (44x30)_1: 1570143437731978870

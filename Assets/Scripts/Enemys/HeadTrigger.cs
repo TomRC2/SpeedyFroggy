@@ -2,18 +2,14 @@ using UnityEngine;
 
 public class HeadTrigger : MonoBehaviour
 {
-    private Enemigo enemigo;
-
-    private void Awake()
-    {
-        enemigo = GetComponentInParent<Enemigo>();
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.TryGetComponent<Player>(out var player))
+        if (!other.TryGetComponent<Player>(out var player))
+            return;
+
+        if (transform.parent.TryGetComponent<IDamageable>(out var damageable))
         {
-            enemigo.TakeDamage(1);
+            damageable.TakeDamage(1);
             player.Bounce();
         }
     }
