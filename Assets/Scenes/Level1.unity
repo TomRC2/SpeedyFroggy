@@ -900,17 +900,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3545549533330464483, guid: af94e354fcd295e4784af0d6bf4d9e39, type: 3}
   m_PrefabInstance: {fileID: 1890791521}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &330184716 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7053347880088289177, guid: e6a6ba31b5b436d498c37e3dd2b43f06, type: 3}
-  m_PrefabInstance: {fileID: 3317994243846523972}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &330184717 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7457152956771609821, guid: e6a6ba31b5b436d498c37e3dd2b43f06, type: 3}
   m_PrefabInstance: {fileID: 3317994243846523972}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330184716}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4798eaad689b3d942879b011faec4342, type: 3}
@@ -3690,7 +3685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dce2442b83ba5ce40b1467e5e1923ffa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 330184716}
+  defaultCheckpoint: {x: 0, y: 0}
 --- !u!4 &1170917711
 Transform:
   m_ObjectHideFlags: 0
@@ -11020,7 +11015,7 @@ Transform:
   m_GameObject: {fileID: 2126390452}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.25, y: -0.07, z: -10}
+  m_LocalPosition: {x: -3.76, y: -0.07, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11170,7 +11165,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2594396166407154745, guid: e6a6ba31b5b436d498c37e3dd2b43f06, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.25
+      value: -3.76
       objectReference: {fileID: 0}
     - target: {fileID: 2594396166407154745, guid: e6a6ba31b5b436d498c37e3dd2b43f06, type: 3}
       propertyPath: m_LocalPosition.y
